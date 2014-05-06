@@ -1,0 +1,15 @@
+#ifndef Block_h
+#define Block_h
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
+// A class for a basic rectangular object.  It can have arbitrary //
+// number of daughter volumes as well as other properties that    //
+// will be given as data members.                                 //
+//                                                                //
+// Author: M. Relich                                              //
+// Penned: 6/5/2014                                               //
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
+
+
+
+#endif
