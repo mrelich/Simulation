@@ -17,18 +17,18 @@ class Block
  public:
 
   // Constructor for a cube
-  Block(double x, double y, double z, double l, double n){
-    Block(x,y,z,l,l,l,n);
+  Block(double x, double y, double z, double dx, double n){
+    Block(x,y,z,dx,dx,dx,n);
   };
 
   // Constructor for rectangular prism
   Block(double x, double y, double z,
-	double l, double w, double h,
+	double dx, double dy, double dz,
 	double n){
     m_pos = Position(x,y,z);
-    m_l   = l;
-    m_w   = w;
-    m_h   = h;
+    m_dx  = dx;
+    m_dy  = dy;
+    m_dz  = dz;
     m_n   = n;
   };
 
@@ -41,30 +41,39 @@ class Block
   };
 
   // Update dimensions
-  void setLength(double l){ m_l = l; };
-  void setHeight(double h){ m_h = h; };
-  void setWidth(double w) { m_w = w; };
+  void setDX(double dx){ m_dx = dx; };
+  void setDY(double dy){ m_dy = dy; };
+  void setDZ(double dz){ m_dz = dz; };
 
   // Retrieve position
   Position* getPosition(){ return &m_pos; };
 
   // Get dimensions
-  double getL(){ return m_l; };
-  double getW(){ return m_w; };
-  double getH(){ return m_h; };
+  double getDX(){ return m_dx; };
+  double getDY(){ return m_dy; };
+  double getDZ(){ return m_dz; };
+  double getV(){ return m_dx*m_dy*m_dz; };
 
   // Update index of refraction
   void setIR(double n){ m_n = n; };
   
   // Get index of refraction
   void getN(){ return m_n; };
+
+  // Is position in this volume
+  bool inBlock(Position* pos);
+  
+  // Calculate the range for a side
+  bool inRange(double p,        // central position
+	       double d,        // distance on either side
+	       double point);   // point in question
   
  private:
   
   Position m_pos;   // Central location in (x,y,z)
-  double m_l;       // length
-  double m_w;       // width
-  double m_h;       // height
+  double m_dx;      // length in x direction
+  double m_dy;      // length in y direction
+  double m_dz;      // length in z direction
   
   double m_n;       // index of refraction
   
