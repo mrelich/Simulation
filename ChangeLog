@@ -2,6 +2,7 @@
 	* Repurposing this package
 	* Removing Geometry package
 	* Adding include, src, run directory.  Nothing compiles yet!!
+	* Committing some more code for the larger picture. Nothing runs yet, just skeleton.
 
 2014-05-08 Matt:
 	* Adding some code sketching out GeoMessenger and how to check objects in volumes.
