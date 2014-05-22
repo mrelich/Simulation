@@ -24,10 +24,14 @@ class Detector
     m_z   = z;
     m_r   = sqrt(x*x+y*y);
     m_phi = atan(y/x);
+
+    m_tvsA = new DataPoints();
   }; 
   
   // Destructor
-  virtual ~Detector(){};
+  virtual ~Detector(){
+    delete m_tvsA;
+  };
 
   // Reset the detector quantites
   void reset(){
@@ -48,6 +52,11 @@ class Detector
   double getZ()  { return m_z; };
   double getR()  { return m_r; };
   double getPHI(){ return m_phi; };
+
+  // Add physics information
+  void addTA(double t, double A){
+    m_tvsA->addPoint(t,A);
+  };
 
  private:
 

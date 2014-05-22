@@ -1,7 +1,9 @@
 2014-05-22 Matt:
 	* Makefile now works
 	* committing some updates related to how events are accessed in mixer
-	
+	* Committing updates to mixer, Analyze, detector, and DataPoints.
+	* Committing Ana.cxx which will execute one configuration now. Need to add options
+	* Everything compiles -- shower profiles look good.
 
 2014-05-21 Matt:
 	* Repurposing this package

@@ -13,6 +13,7 @@ Mixer::Mixer(float Eprimary,
 	     string inname) :
   m_chain(NULL),
   m_rand(NULL),
+  m_Eprimary(Eprimary),
   m_tobemixed(nToBeMixed),
   m_totEvents(totEvents),
   m_scale(nPartPerEvent)
@@ -73,20 +74,19 @@ Mixer::~Mixer()
 //------------------------------------------------//
 // Generate events
 //------------------------------------------------//
-vector<double> Mixer::generateQz(int nsteps, float zmin,
-				 float zmax)
+void Mixer::generateQz(int nsteps, float zmin,
+		       float zmax, vector<double> &Qz)
 {
 
-  // Charge excess
-  vector<double> Qz (nsteps,0);
+  // Clear previous charge excess
+  Qz.clear();
+  Qz = vector<double> (nsteps,0);
   
   // Now loop over total times to reuse
   for(int iMix=0; iMix<m_tobemixed; ++iMix){
     int rndEvent = getEventNum();
     addSingleQz(rndEvent, nsteps, zmin, zmax, Qz);
   }// end loop over mixed events
-  
-  return Qz;
 
 }
 
@@ -97,7 +97,7 @@ void Mixer::addSingleQz(int evtNum, int nsteps,
 			float zmin, float zmax,
 			vector<double> &Qz)
 {
-  
+
   // Load the particles for a given event
   m_chain->GetEntry(evtNum);
   m_parts = m_event->getParticles();
@@ -113,9 +113,18 @@ void Mixer::addSingleQz(int evtNum, int nsteps,
     int pdg = p->pdg();
     if( abs(pdg) != 11 ) continue;
 
-    // Find bin that this particle falls in
-    int low  = (int) (p->ZI() / bw);
-    int high = (int) (p->ZF() / bw);
+    // Right now only consider forward travelling
+    // particles... This is necessary to use the
+    // parameterization, which assumes all particles
+    // are created and travel in the direction of the
+    // shower. True for high energy...
+    if( p->ZI() < 0 ) continue;
+    if( p->ZF() < 0 ) continue;
+
+    // Find bin that this particle falls in    
+    // Also convert from cm --> m
+    int low  = (int) (p->ZI() / 100. / bw);
+    int high = (int) (p->ZF() / 100. / bw);
 
     // If in same bin, do nothing
     if(low == high) continue;

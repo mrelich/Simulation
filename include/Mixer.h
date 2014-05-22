@@ -41,20 +41,25 @@ class Mixer
 
 
   // Generate a mixed profile
-  std::vector<double> generateQz(int nsteps,  // nsteps in the profile
-				 float zmin,  // starting point of shower
-				 float zmax); // end point of shower
+  void generateQz(int nsteps,               // nsteps in the profile
+		  float zmin,               // starting point of shower
+		  float zmax,               // end point of shower
+		  std::vector<double> &Qz); // Charge excess holder
 
   // Generate single event
   void addSingleQz(int evtNum,                // Random number for event to pick
 		   int nsteps,                // nsteps in the profile
 		   float zmin,                // starting point of shower
-		   float zmax,                 // end point of shower
+		   float zmax,                // end point of shower
 		   std::vector<double> &Qz);  // Charge excess
   
   // Generate random event number
   int getEventNum();
 
+  // Get the shower energy in MeV
+  double getShowerEMeV(){ 
+    return m_Eprimary * m_scale * m_tobemixed; 
+  };
 
  private:
 
@@ -63,6 +68,7 @@ class Mixer
   std::vector<Particle> m_parts;      // Vector to hold particles
   TRandom3* m_rand;                   // Random event number generator
   
+  float m_Eprimary;                   // Primary Energy
   int m_tobemixed;                    // nEvents needed to recreate Edesired
   int m_totEvents;                    // total number of events
   float m_scale;                      // factor to scale each event by

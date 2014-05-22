@@ -8,6 +8,7 @@
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
 
 #include <vector>
+#include <iostream>
 
 class DataPoints
 {
@@ -15,48 +16,28 @@ class DataPoints
  public: 
 
   // Constructor
-  DataPoints(){};
+  DataPoints();
 
   // Destructor
-  virtual ~DataPoints(){
-    times.clear();
-    variables.clear();
-  };
+  virtual ~DataPoints();
 
   // Method to add a new point
-  void addPoint(double t, double V){
-    times.push_back(t);
-    variables.push_back(V);
-  };
+  void addPoint(double t, double V);
 
-  // Retrieve all times and variables
-  std::vector<double> getTimes(){ return times; };
-  std::vector<double> getVar()  { return variables; };
+  // Retrieve all m_times and variables
+  std::vector<double> getTimes(){ return m_times; };
+  std::vector<double> getVar()  { return m_variables; };
 
   // Retrieve a specific point
-  void getPoint(unsigned int i, double &t, double &V){
-
-    // Check bounds
-    // TODO: Add error message?
-    if( i >= times.size() ){
-      t = 0; 
-      V = 0; 
-      return;
-    }
-    
-    // Assign variable
-    t = times.at(i);
-    V = variables.at(i);
-    return;
-  };
+  void getPoint(unsigned int i, double &t, double &V);
 
   // Get the number of stored points
-  unsigned int getN(){ return times.size(); };
+  unsigned int getN(){ return m_times.size(); };
   
  private:
   
-  std::vector<double> times;        // vector to hold times
-  std::vector<double> variables;    // vector to hold variable vs. time.
+  std::vector<double> m_times;        // vector to hold times
+  std::vector<double> m_variables;    // vector to hold variable vs. time.
   
 
 };
