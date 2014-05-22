@@ -29,7 +29,7 @@ class Detectors
 
   // Destructor
   virtual ~Detectors(){
-    for(unsigned int i=0; i<m_detectors; ++i)
+    for(unsigned int i=0; i<m_detectors.size(); ++i)
       delete m_detectors.at(i);
     m_detectors.clear();
   };

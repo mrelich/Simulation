@@ -22,11 +22,11 @@ CXXFLAGS	= $(CFLAGS) $(RCXX) -lTreePlayer
 LDFLAGS		= -lm -L. $(RLIB)
 
 #---- Packages Dependencies ----#
-Targets = mix treeMake
+Targets = ana
 
 all: Makefile $(Targets)
 
-obj/%.so: $(src)/%.cxx
+obj/%.so:
 	$(CXX) -c $< -o $@ $(SOFLAGS) $(CXXFLAGS) $(links)
 
 #---- ROOT Objects ----#
@@ -39,36 +39,25 @@ obj/Event_Dict.cxx: $(inc)/Event.h $(inc)/LinkDefEvent.h
 obj/Event_Dict.so: obj/Event_Dict.cxx $(inc)/Event.h
 	$(CXX) -c $< -o $@ $(SOFLAGS) $(CXXFLAGS) -Os -g1 -I$(inc)
 
-
-
 #---- Additional Objects ----#
-#obj/Particle.so:	$(inc)/Particle.h
-obj/FileReader.so:	$(inc)/FileReader.h
-obj/Mixer.so:		$(inc)/Mixer.h
-obj/Mix.so:		$(src)/Mix.cxx
-obj/TreeMaker.so:	$(inc)/TreeMaker.h
+#obj/DataPoints.so:	$(inc)/DataPoints.h
+#obj/Detector.so:	$(inc)/Detector.h
+obj/Detectors.so:	$(src)/Detectors.cxx
+obj/Dim3.so:		$(src)/Dim3.cxx
+obj/Mixer.so:		$(src)/Mixer.cxx
+obj/Analyze.so:		$(src)/Analyze.cxx
+obj/Ana.so:		../main/Ana.cxx
 
-#---- Analysis Code ----#
-#readTest: 			\
-#	obj/Particle.so		\
-#	obj/FileReader.so	
-#	$(CXX) $+ -o $@ $(CXXFLAGS) $(LDFLAGS) $(links)
 
-mix:	 			\
+ana:	 			\
 	obj/Particle_Dict.so	\
-	obj/FileReader.so	\
+	obj/Event_Dict.so	\
+	obj/Detectors.so	\
+	obj/Dim3.so		\
 	obj/Mixer.so		\
-	obj/Event_Dict.so	\
-	obj/Mix.so
+	obj/Analyze.so		\
+	obj/Ana.so
 	$(CXX) $+ -o $@ $(CXXFLAGS) $(LDFLAGS) $(links)
-
-treeMake:			\
-	obj/Particle_Dict.so	\
-	obj/Event_Dict.so	\
-	obj/FileReader.so	\
-	obj/TreeMaker.so
-	$(CXX) $+ -o $@ $(CXXFLAGS) $(LDFLAGS) $(links)
-
 
 clean:
 	rm -f $(Targets)

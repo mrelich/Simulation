@@ -24,3 +24,22 @@ Analyze::~Analyze()
   delete m_mixer;
 
 }
+
+//-----------------------------------------------//
+// Generate a given event
+//-----------------------------------------------//
+void Analyze::generateEvent()
+{
+
+
+}
+
+
+//-----------------------------------------------//
+// Generate a pulse that is a part of the beam
+//-----------------------------------------------//
+void Analyze::generatePulse(float dt)
+{
+
+
+}

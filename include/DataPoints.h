@@ -34,7 +34,7 @@ class DataPoints
   std::vector<double> getVar()  { return variables; };
 
   // Retrieve a specific point
-  void getPoint(int i, double &t, double &V){
+  void getPoint(unsigned int i, double &t, double &V){
 
     // Check bounds
     // TODO: Add error message?
@@ -51,8 +51,8 @@ class DataPoints
   };
 
   // Get the number of stored points
-  void getN(){ return times.size(); };
-
+  unsigned int getN(){ return times.size(); };
+  
  private:
   
   std::vector<double> times;        // vector to hold times

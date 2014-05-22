@@ -40,6 +40,14 @@ class Analyze
 
   // Generate the next event and record
   // the result at the detector positions.
+  // Remember that the next event consists of
+  // multiple showers superimposed.
+  void generateEvent();
+
+  // Generate the results from a given pulse
+  // that the user has specified. The user must
+  // input some pulse offset.
+  void generatePulse(float dt);
 
 
   //
@@ -49,6 +57,14 @@ class Analyze
   Dim3* m_dim3;           // Time-domain 3D parameterization
   Mixer* m_mixer;         // Event mixer class
   Detectors* m_detectors; // Detector objects
+
+  //
+  // Variables
+  //
+
+  double m_pulseSeparation;   // The seperation in incoming pulses
+  double m_nEvents;           // The number of events to process
+
 
 };
 

@@ -1,3 +1,8 @@
+2014-05-22 Matt:
+	* Makefile now works
+	* committing some updates related to how events are accessed in mixer
+	
+
 2014-05-21 Matt:
 	* Repurposing this package
 	* Removing Geometry package

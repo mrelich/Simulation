@@ -4,7 +4,7 @@
 //--------------------------------------------//
 // Initialize the detector array
 //--------------------------------------------//
-void Initialize()
+void Detectors::initialize()
 {
 
   // Add detectors here where you need

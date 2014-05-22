@@ -34,25 +34,30 @@ class Mixer
 	int nPartPerEvent,     // Specify how to scale the particles
 	int nToBeMixed,        // nEvents to mix together
 	int totEvents,         // total events in input file
-	int finalEvents,       // final number of events needed
 	std::string inname);   // Input file name
 
   // Destructor
   virtual ~Mixer();
 
-  // Generate events
-  void generateEvents();
+
+  // Generate a mixed profile
+  std::vector<double> generateQz(int nsteps,  // nsteps in the profile
+				 float zmin,  // starting point of shower
+				 float zmax); // end point of shower
 
   // Generate single event
-  TH1D* generateEvent(int evtNum);
-
+  void addSingleQz(int evtNum,                // Random number for event to pick
+		   int nsteps,                // nsteps in the profile
+		   float zmin,                // starting point of shower
+		   float zmax,                 // end point of shower
+		   std::vector<double> &Qz);  // Charge excess
+  
   // Generate random event number
   int getEventNum();
 
 
  private:
 
-  TFile* m_output;                    // output root file
   TChain* m_chain;                    // Chain holding events
   Event*  m_event;                    // Event objects
   std::vector<Particle> m_parts;      // Vector to hold particles
@@ -60,13 +65,7 @@ class Mixer
   
   int m_tobemixed;                    // nEvents needed to recreate Edesired
   int m_totEvents;                    // total number of events
-  int m_finalEvents;                  // total number of events to generate
   float m_scale;                      // factor to scale each event by
-
-  int m_nbins;                        // Number of bins
-  float m_xmin;                       // xmin
-  float m_xmax;                       // xmax
-  float m_step;                       // step size
 
 };
 
