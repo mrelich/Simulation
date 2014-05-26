@@ -54,6 +54,12 @@ class Detectors
   // detectors have been initialzed for looping
   unsigned int getN(){ return m_detectors.size(); };   
 
+  // Clear the detectors
+  void clearData(){
+    for(unsigned int i=0; i<m_detectors.size(); ++i)
+      m_detectors.at(i)->clearData();
+  };
+
  private:
 
   // Add a detector

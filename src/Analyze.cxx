@@ -77,7 +77,7 @@ void Analyze::loop()
       cout<<"Processing Event: "<<iEvt<<endl;
     
     // Reset output for saving
-    m_save->resetQzCounter();
+    m_save->reset();
 
     // Generate the next event
     generateEvent(iEvt);
@@ -132,7 +132,7 @@ void Analyze::generatePulse(float dt, int evtNum)
     for(int it=0; it<m_tsteps; ++it){
     
       // record time and vector potential
-      t = m_tstepSize * it + dt; 
+      t = m_tstepSize * it + dt;       
       A = m_dim3->getANF(t * 1e-9,      // put time in s
 			 det->getZ(),   // detector z position
 			 det->getR(),   // detector radial position
@@ -140,13 +140,20 @@ void Analyze::generatePulse(float dt, int evtNum)
 			 stepSize);     // step size in z
 			 
       // Save this timing information to a given detector
-      //cout<<"\t saving data: "<<t<<" "<<A<<endl;
       det->addTA(t,A);
-      //cout<<"\t\t Data saved"<<endl;
       
     }// end loop over time steps
-  
+    
   }// end loop over detectors
+
+  // Now we have the pulse results. I will
+  // save results to TGraphs.  Maybe this 
+  // isn't best place. think about it...
+  m_save->fillA(m_detectors, evtNum, m_outfile);
+  
+  // Now clear the detectors since we have
+  // filled already for that time.
+  m_detectors->clearData();
 
 }
 

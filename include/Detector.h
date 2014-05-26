@@ -18,13 +18,14 @@ class Detector
  public:
 
   // Constructor
-  Detector(double x, double y, double z){
+  Detector(double x, double y, double z, double Athresh){
     m_x   = x;
     m_y   = y;
     m_z   = z;
     m_r   = sqrt(x*x+y*y);
     m_phi = atan(y/x);
 
+    m_AThresh = Athresh;
     m_tvsA = new DataPoints();
   }; 
   
@@ -37,14 +38,24 @@ class Detector
   void reset(){
     m_x = m_y = m_z = 0;
     m_r = m_phi = 0;
+    m_AThresh = 0;
   };
 
+  // Reset the data
+  void clearData(){
+    m_tvsA->clear();
+  };
+
+  //
+  // Geometry info
+  //
+
   // Accessors to set the quantities
-  void setX(double x)    { m_x = x;     };
-  void setY(double y)    { m_y = y;     };
-  void setZ(double z)    { m_z = z;     };
-  void setR(double r)    { m_r = r;     };
-  void setPHI(double phi){ m_phi = phi; };
+  void setX(double x)     { m_x = x;     };
+  void setY(double y)     { m_y = y;     };
+  void setZ(double z)     { m_z = z;     };
+  void setR(double r)     { m_r = r;     };
+  void setPHI(double phi) { m_phi = phi; };
 
   // Accessors to retrieve information
   double getX()  { return m_x; };
@@ -53,10 +64,35 @@ class Detector
   double getR()  { return m_r; };
   double getPHI(){ return m_phi; };
 
-  // Add physics information
+  //
+  // Physics info
+  //
+
+  // time and vector potential
   void addTA(double t, double A){
     m_tvsA->addPoint(t,A);
   };
+  
+  void getPoint(unsigned int i, double &t, double &A){
+    if( m_tvsA->getN() <= i ){
+      t = 0;
+      A = 0;
+      return;
+    }
+    
+    m_tvsA->getPoint(i, t, A);
+    return;
+  };
+  
+  unsigned int getN(){ return m_tvsA->getN(); };
+
+  // Method to check vector potential 
+  // thresholds
+  void setAThresh(double AThresh){ m_AThresh = AThresh; };
+  double getAThresh(){ return m_AThresh; };
+  bool passAThresh(double A){ return A > m_AThresh; };
+
+
 
  private:
 
@@ -70,6 +106,8 @@ class Detector
   // Physics information
   DataPoints* m_tvsA;  // Store time and vector potential info
 
+  // Threshold
+  double m_AThresh;    // Threshold to start recording. 
 
 };
 

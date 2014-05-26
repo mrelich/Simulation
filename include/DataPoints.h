@@ -33,6 +33,12 @@ class DataPoints
 
   // Get the number of stored points
   unsigned int getN(){ return m_times.size(); };
+
+  // Clear data
+  void clear(){
+    m_times.clear();
+    m_variables.clear();
+  };
   
  private:
   
