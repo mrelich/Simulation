@@ -60,6 +60,12 @@ class Detectors
       m_detectors.at(i)->clearData();
   };
 
+  // Add method to calculate the electric field for
+  // all of the initialized detectors. This of course
+  // requires there to be a vector potential, so one
+  // must first fill the vector potential.
+  void calculateEField();
+
  private:
 
   // Add a detector

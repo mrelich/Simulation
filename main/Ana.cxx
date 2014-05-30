@@ -32,15 +32,15 @@ int main()
 
   // Options
   double EPrimary   = 40;   // MeV
-  int nPartPerEvent = 1e2;  // Number of times to reuse same shower
+  int nPartPerEvent = 1.754e5;  // Number of times to reuse same shower
   int nToBeMixed    = 1e2;  // Number of showers to use
   int totEvents     = 1e6;  // Total number of events in input file
   string inputfile  = "";   // The input file
   int nzsteps       = 100;  // Number of steps for shower
   double zmin       = 0;    // Minimum z point [m]
   double zmax       = 1;    // maximum z point [m]
-  int ntsteps       = 300;  // Number of time steps
-  double tstepsize  = 0.1;  // Time step size [ns]
+  int ntsteps       = 10000;  // Number of time steps
+  double tstepsize  = 0.01;  // Time step size [ns]
   string outputname = "";   // The name to save the output
   int flag          = 0;    // Flag to turn on and off saving output
   
@@ -48,8 +48,10 @@ int main()
   // for now I will hard code some test
   // values 
   inputfile  = "showers.root";
-  outputname = "testOutput.root"; 
+  outputname = "output_testbeam350ps.root"; 
   flag |= Opt_SaveProfiles;
+  flag |= Opt_SaveVPotential;
+  flag |= Opt_SaveEField;
 
   // Create instance of analyze 
   Analyze* ana = new Analyze();

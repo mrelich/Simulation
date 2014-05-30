@@ -175,3 +175,27 @@ double Dim3::getLQtot(vector<double> Qz,
   return tot;
 
 }
+
+//-----------------------------------------------//
+// Calculate EField from vector potential
+//-----------------------------------------------//
+void Dim3::getEField(std::vector<double> time,
+		     std::vector<double> A,   
+		     std::vector<double> &E)
+{
+
+  E.clear();
+
+  // Loop over Time and A to get E field 
+  // by diferentiation.
+  double t0=0, t1=0, A0=0, A1=0;
+  for(uint i=0; i<time.size()-1; ++i){
+    t0 = time.at(i);
+    t1 = time.at(i+1);
+    A0 = A.at(i);
+    A1 = A.at(i+1);
+
+    E.push_back( (A1-A0) / (t1-t0) );
+  }// end loop over times
+
+}

@@ -17,9 +17,9 @@ Analyze::Analyze() :
   m_initShowerParams(false),
   m_initTimeParams(false),
   m_initOutInfo(false),
-  m_pulseSeparation(300e-3), // default 300ps
-  m_nEvents(10),
-  m_nPulses(10),
+  m_pulseSeparation(350e-3), // default 300ps
+  m_nEvents(1),
+  m_nPulses(57),
   m_nsteps(100),
   m_zmin(0),
   m_zmax(1),
@@ -112,6 +112,7 @@ void Analyze::generateEvent(int evtNum)
 void Analyze::generatePulse(float dt, int evtNum)
 {
 
+  cout<<"For event: "<<evtNum<<" dt: "<<dt<<endl;
   // Generate a new profile
   setNextShower();
 
@@ -128,17 +129,18 @@ void Analyze::generatePulse(float dt, int evtNum)
   for(unsigned int iD=0; iD<nDet; ++iD){
     Detector* det = m_detectors->getDetector(iD);
     
-    // Loop over the points to save time
+    // Loop over the points to save the time
     for(int it=0; it<m_tsteps; ++it){
     
       // record time and vector potential
-      t = m_tstepSize * it + dt;       
-      A = m_dim3->getANF(t * 1e-9,      // put time in s
+      t = 80 + m_tstepSize * it;
+
+      A = m_dim3->getANF((t-dt) * 1e-9,      // put time in s
 			 det->getZ(),   // detector z position
 			 det->getR(),   // detector radial position
 			 m_Qz,          // Qz distribution
-			 stepSize);     // step size in z
-			 
+			 stepSize);     // step size in z      
+	
       // Save this timing information to a given detector
       det->addTA(t,A);
       
@@ -149,7 +151,13 @@ void Analyze::generatePulse(float dt, int evtNum)
   // Now we have the pulse results. I will
   // save results to TGraphs.  Maybe this 
   // isn't best place. think about it...
-  m_save->fillA(m_detectors, evtNum, m_outfile);
+  if( m_outFlag & Opt_SaveVPotential )
+    m_save->fillA(m_detectors, evtNum, m_outfile);
+
+  if( m_outFlag & Opt_SaveEField ){
+    m_detectors->calculateEField();
+    m_save->fillE(m_detectors, evtNum, m_outfile);
+  }
   
   // Now clear the detectors since we have
   // filled already for that time.

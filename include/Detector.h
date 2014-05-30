@@ -11,6 +11,7 @@
 
 // Standard
 #include <cmath>
+#include <iostream>
 
 class Detector
 {
@@ -26,12 +27,15 @@ class Detector
     m_phi = atan(y/x);
 
     m_AThresh = Athresh;
+    
     m_tvsA = new DataPoints();
+    m_tvsE = new DataPoints();
   }; 
   
   // Destructor
   virtual ~Detector(){
     delete m_tvsA;
+    delete m_tvsE;
   };
 
   // Reset the detector quantites
@@ -44,6 +48,7 @@ class Detector
   // Reset the data
   void clearData(){
     m_tvsA->clear();
+    m_tvsE->clear();
   };
 
   //
@@ -68,31 +73,38 @@ class Detector
   // Physics info
   //
 
-  // time and vector potential
+  // Time and vector potential
   void addTA(double t, double A){
     m_tvsA->addPoint(t,A);
   };
-  
-  void getPoint(unsigned int i, double &t, double &A){
-    if( m_tvsA->getN() <= i ){
-      t = 0;
-      A = 0;
-      return;
-    }
-    
-    m_tvsA->getPoint(i, t, A);
-    return;
+
+  // Time and electric field
+  void addTE(double t, double E){
+    m_tvsE->addPoint(t,E);
   };
   
+  // Access a specific data point for electric field
+  void getPoint(unsigned int i, double &t, double &A){
+    m_tvsA->getPoint(i, t, A);
+  };
+
+  // Access a specific data point for electric field
+  void getE(unsigned int i, double &t, double &E){
+    m_tvsE->getPoint(i, t, E);
+  };
+  
+  // Get the number of data points 
+  // for the vector potential
   unsigned int getN(){ return m_tvsA->getN(); };
 
-  // Method to check vector potential 
-  // thresholds
-  void setAThresh(double AThresh){ m_AThresh = AThresh; };
-  double getAThresh(){ return m_AThresh; };
-  bool passAThresh(double A){ return A > m_AThresh; };
+  // Get the number of data points
+  // for the electrci field
+  unsigned int getNE(){ return m_tvsE->getN(); };
 
-
+  // Method to check vector potential thresholds
+  void setAThresh(double AThresh){ m_AThresh = AThresh;  };
+  double getAThresh()            { return m_AThresh;     };
+  bool passAThresh(double A)     { return A > m_AThresh; };
 
  private:
 
@@ -105,6 +117,7 @@ class Detector
 
   // Physics information
   DataPoints* m_tvsA;  // Store time and vector potential info
+  DataPoints* m_tvsE;  // Store the electric field vs. time
 
   // Threshold
   double m_AThresh;    // Threshold to start recording. 

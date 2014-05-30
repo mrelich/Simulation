@@ -43,7 +43,15 @@ class Dim3
 		std::vector<double> Qz,  // longitudinal distribution
 		double step);            // step size in rad lengths
   
-    
+
+  // I am not sure if it is best to put this in here, but one
+  // should have a method to calculate the electric field from
+  // the vector potential. This is simply a time derivative of 
+  // vector potential, so vector potential will be an input.
+  void getEField(std::vector<double> time,  // Timing info
+		 std::vector<double> A,     // Vector potential
+		 std::vector<double> &E);   // empty E-field vector
+
 
  private:
 
