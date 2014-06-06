@@ -110,7 +110,7 @@ void SaveOutput::fillE(Detectors* detectors,
 
     // Start building name
     outname.str("");
-    outname << "E_det" << id << "_evtNum" << evtNum <<"_pulse" << m_tACounter;
+    outname << "E_det" << id << "_evtNum" << evtNum <<"_pulse" << m_tECounter;
     
     // Get detector
     Detector* det = detectors->getDetector(id);

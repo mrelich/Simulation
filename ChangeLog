@@ -1,3 +1,7 @@
+2014-06-06 Matt:
+	* Fixing bug in calculation of vector potential related to timing.
+	* Committing scripts used to make plots, in case I need to make some while at ARENA
+
 2014-05-30 Matt:
 	* Adding scripts to plot the first results.
 	* Still need to understand what is going on with the fourier transform...

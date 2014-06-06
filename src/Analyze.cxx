@@ -17,12 +17,15 @@ Analyze::Analyze() :
   m_initShowerParams(false),
   m_initTimeParams(false),
   m_initOutInfo(false),
-  m_pulseSeparation(350e-3), // default 300ps
+  m_pulseSeparation(350e-3), // default 350ps
   m_nEvents(1),
+  //m_nPulses(2),
   m_nPulses(57),
   m_nsteps(100),
   m_zmin(0),
   m_zmax(1),
+  m_tsteps(0),
+  m_tstepSize(10),
   m_outFlag(0),
   m_outfile(NULL)
 {
@@ -133,16 +136,17 @@ void Analyze::generatePulse(float dt, int evtNum)
     for(int it=0; it<m_tsteps; ++it){
     
       // record time and vector potential
-      t = 80 + m_tstepSize * it;
+      //t = 80 + m_tstepSize * it;
+      t = m_tstepSize * it;
 
-      A = m_dim3->getANF((t-dt) * 1e-9,      // put time in s
+      A = m_dim3->getANF(t * 1e-9,      // put time in s
 			 det->getZ(),   // detector z position
 			 det->getR(),   // detector radial position
 			 m_Qz,          // Qz distribution
 			 stepSize);     // step size in z      
 	
       // Save this timing information to a given detector
-      det->addTA(t,A);
+      det->addTA(t+dt,A);
       
     }// end loop over time steps
     

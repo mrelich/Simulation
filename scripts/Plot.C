@@ -8,7 +8,9 @@
 #include "myHist.C"
 #include "TVirtualFFT.h"
 
-TString savedir = "../plots/";
+TString savedir = "../plots/AraCollab_Req6m/";
+int restrictpulses = 1;
+TString savepulse = "1";
 
 //--------------------------------//
 // Main
@@ -71,13 +73,15 @@ void PlotSingle(TString fpath,
 
   // Make a generic histogram
   TString xtitle = "time [ns]";
-  TH1F* h = makeHist("h",1000,100,130,xtitle,ytitle,kBlack,20);
+  //TH1F* h = makeHist("h",1000,100,130,xtitle,ytitle,kBlack,20);
+  TH1F* h = makeHist("h",1000,40,65,xtitle,ytitle,kBlack,20);
+  h->Fill(-10000);
   if(var == "E"){
-    h->SetMaximum(0.1);
-    h->SetMinimum(-0.1);
+    h->SetMaximum(0.2);
+    h->SetMinimum(-0.2);
   }
   else{
-    h->SetMaximum(4e-12);
+    h->SetMaximum(1e-11);
     h->SetMinimum(1e-15);
   }
   h->Draw();
@@ -121,13 +125,15 @@ void PlotSum(TString fpath,
 
   // Make a generic histogram
   TString xtitle = "time [ns]";
-  TH1F* h = makeHist("h",30,100,130,xtitle,ytitle,kBlack,20);
+  //TH1F* h = makeHist("h",30,100,130,xtitle,ytitle,kBlack,20);
+  TH1F* h = makeHist("h",30,40,65,xtitle,ytitle,kBlack,20);
+  h->Fill(-100000);
   if( var == "E" ){ 
-    h->SetMaximum(0.1);
-    h->SetMinimum(-0.1);
+    h->SetMaximum(0.2);
+    h->SetMinimum(-0.12);
   }
   else{
-    h->SetMaximum(5e-12);
+    h->SetMaximum(11e-12);
     h->SetMinimum(1e-15);
   }
   h->Draw();
@@ -174,6 +180,12 @@ void PlotSum(TString fpath,
   save += ".png";
   c->SaveAs(save.Data());
 
+  //TFile* output = new TFile("forRomain.root","recreate");
+  //gr->SetName("Efield");
+  //gr->Write();
+  //output->Write();
+  //output->Close();
+
 }
 
 //--------------------------------//
@@ -189,12 +201,15 @@ void PlotEw(TString fpath,
   
   // Canvas
   TCanvas* c = makeCanvas("c");
+  c->SetLogx();
+  c->SetLogy();
 
   // Make a generic histogram
   TString xtitle = "f [MHz]";
-  TH1F* h = makeHist("h",10000,0,2000,xtitle,ytitle,kBlack,20);
-  h->SetMaximum(5);
-  h->SetMinimum(0);
+  TH1F* h = makeHist("h",10000,0,20000,xtitle,ytitle,kBlack,20);
+  h->SetMaximum(2e-4);
+  h->SetMinimum(1e-7);
+  h->GetXaxis()->SetTitleOffset(1.4);
   h->Draw("");
 
   TH1F* h_E = makeHist("h_E",10000,0,200,xtitle,ytitle,kBlack,20);
@@ -215,7 +230,9 @@ void PlotEw(TString fpath,
 
   // Initialize TGraph and loop
   TGraph* gr = NULL;
-  for(int np=1; np<=npulses; ++np){
+  //for(int np=1; np<=npulses; ++np){
+  for(int np=1; np<=restrictpulses; ++np){
+    cout<<"Building: "<<np<<endl;
     ss.str(""); ss << base << np;
     gr = (TGraph*) file->Get(ss.str().c_str());
     
@@ -232,10 +249,41 @@ void PlotEw(TString fpath,
     delete gr;
   }// end loop over pulses
 
+  // Now Fourier transform the points
+  double ReE[npoints];
+  double ImE[npoints];
+  double Ef[npoints];
+  double freq[npoints];
+  int nstep = 2000;
+  int step  = 10;
+  double pi = TMath::Pi();
+  double dt = time[10] - time[9];
+  for(int is=0; is<nstep; ++is){
+    ReE[is] = 0;
+    ImE[is] = 0;
+    freq[is] = (is+1)*step;
+    for(int ip=0; ip<points; ++ip){
+      ReE[is] += E[ip] * cos(2*pi*freq[is]*1e6*time[ip]*1e-9) * dt * 1e-9 * 1e6;
+      ImE[is] += E[ip] * sin(2*pi*freq[is]*1e6*time[ip]*1e-9) * dt * 1e-9 * 1e6;
+    }
+
+    Ef[is] = sqrt(ReE[is]*ReE[is] + ImE[is]*ImE[is]);
+    //cout<<"Re: "<<ReE[is]<<" Im: "<<ImE[is]<<" |E|: "<<Ef[is]<<endl;
+  }
+
+  // Make graph
+  TGraph* res = new TGraph(nstep, freq, Ef);
+  res->Draw("same");
+
+  /*
   TH1* fft = 0;
   TVirtualFFT::SetTransform(0);
   fft = h_E->FFT(fft,"MAG");
   fft->Draw("same");
+  */
+
+  // Save
+  c->SaveAs((savedir+"EvsF_pulses"+savepulse+".png").Data());
 
 }
 

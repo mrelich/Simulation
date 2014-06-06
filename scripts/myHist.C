@@ -180,6 +180,18 @@ TH1F* makeHist(TString name, int nbins, float xmin, float xmax,
 {
 
   TH1F* h = new TH1F(name.Data(),"",nbins,xmin,xmax);
+  setHistAtt(h,xtitle,ytitle,color,marker);
+  return h;
+
+}
+
+//------------------------------------------------------------//
+// Set histogram attributes
+//------------------------------------------------------------//
+void setHistAtt(TH1F* &h, TString xtitle, TString ytitle, 
+		int color, int marker)
+{
+
   h->GetXaxis()->SetTitle(xtitle.Data());
   h->GetYaxis()->SetTitle(ytitle.Data());
   h->SetLineColor(color);
@@ -188,7 +200,135 @@ TH1F* makeHist(TString name, int nbins, float xmin, float xmax,
   h->SetStats(0);
   h->SetTitle("");
   h->GetYaxis()->SetTitleOffset(1.5);
-  return h;
 
 }
 
+//----------------------------------------//
+// Format graph
+//----------------------------------------//
+void formatGraph(TGraph* &gr, TString xtitle,
+		 TString ytitle, int color)
+{
+
+  gr->SetTitle("");
+  gr->GetYaxis()->SetTitle(ytitle.Data());
+  gr->GetXaxis()->SetTitle(xtitle.Data());
+  gr->SetLineColor(color);
+  gr->GetYaxis()->SetTitleOffset(1.5);
+  gr->SetLineWidth(2);
+}
+
+//----------------------------------------//
+// Get Fourier Transform to freq space
+//----------------------------------------//
+void getFTF(TGraph* gr,
+	    TGraph* &mag,        // placeholder for mag
+	    TGraph* &phase,      // placeholder for phase
+	    float min,           // freq in MHz 
+	    float stepSize,      // Step size in MHz
+	    const int nsteps)
+
+{
+  
+  // Make place hodlers
+  Double_t ReE[nsteps];
+  Double_t ImE[nsteps];
+  Double_t EF[nsteps];
+  Double_t Phase[nsteps];
+  Double_t freq[nsteps];
+  Double_t pi = TMath::Pi();
+  
+  // Necessary for looping
+  double E=0, t=0;
+  int np = gr->GetN();
+  int filledPoints = 0;
+  
+  // Get the time step info
+  double dt = 0; 
+  gr->GetPoint(2,dt,E);
+  gr->GetPoint(1,t,E); 
+  dt = dt -t;
+
+  // Now loop and calculate
+  for(int is=0; is<nsteps; ++is){
+    ReE[is]  = 0;
+    ImE[is]  = 0;
+    freq[is] = min + is*stepSize;
+    filledPoints += 1;
+    
+    // Now loop and calculate the real 
+    // and imaginary components
+    for(int ip=0; ip<np; ++ip){
+      gr->GetPoint(ip,t,E);
+      ReE[is] += E * cos(2*pi*freq[is]*1e6*t*1e-9) * dt * 1e-9 * 1e6;
+      ImE[is] += E * sin(2*pi*freq[is]*1e6*t*1e-9) * dt * 1e-9 * 1e6;
+    }// end loop over times
+
+    EF[is]    = sqrt(ReE[is]*ReE[is] + ImE[is]*ImE[is]);
+    if( ReE[is] != 0 ) Phase[is] = atan(ImE[is]/ReE[is]);
+    else               Phase[is] = 0;
+  }// end loop over freq points
+  
+  mag   = new TGraph(filledPoints, freq, EF);
+  phase = new TGraph(filledPoints, freq, Phase);
+
+}
+
+
+//----------------------------------------//
+// Get Fourier Transform to freq space
+//----------------------------------------//
+void getFTT(TGraph* gr,
+	    TGraph* inPhase,
+	    float min,       // time in ns 
+	    float stepSize,  // Step size in ns
+	    const int nsteps,
+	    TGraph* &mag,
+	    TGraph* &phase)
+{
+  
+  // Make place hodlers
+  Double_t ReE[nsteps];
+  Double_t ImE[nsteps];
+  Double_t ET[nsteps];
+  Double_t Phase[nsteps];
+  Double_t time[nsteps];
+  Double_t pi = TMath::Pi();
+
+  // Necessary for looping
+  double E=0, f=0, inphase=0;
+  int np = gr->GetN();
+  int filledPoints = 0;
+  
+  // Get the time step info
+  double df = 0; 
+  gr->GetPoint(2,df,E);
+  gr->GetPoint(1,f,E); 
+  df = df -f;
+
+  // Now loop and calculate
+  for(int is=0; is<nsteps; ++is){
+    ReE[is]  = 0;
+    ImE[is]  = 0;
+    time[is] = min + is*stepSize;
+    filledPoints += 1;
+    
+    // Now loop and calculate the real 
+    // and imaginary components
+    for(int ip=0; ip<np; ++ip){
+      gr->GetPoint(ip,f,E);
+      inPhase->GetPoint(ip,f,inphase);
+      ReE[is] += E * cos(2*pi*f*1e6*time[is]*1e-9 + inphase) * df; // df in MHz
+      ImE[is] -= E * sin(2*pi*f*1e6*time[is]*1e-9 + inphase) * df; // df in MHz
+    }// end loop over times
+
+    ET[is] = sqrt(ReE[is]*ReE[is] + ImE[is]*ImE[is]);
+    if( ReE[is] != 0 ) Phase[is] = atan(ImE[is]/ReE[is]);
+    else               Phase[is] = 0;
+
+  }// end loop over freq points
+
+  mag = new TGraph(filledPoints, time, ET);
+  phase = new TGraph(filledPoints, time, Phase);
+
+}

@@ -11,10 +11,25 @@ void Detectors::initialize()
 
   // Specify some threshold to start recording data
   double AThreshold = 1e-11;
-  
+
   // Add detectors here where you need
   // to specify the x,y,z position in m
-  addDetector( new Detector(14.55,0,10, AThreshold) );
+  //addDetector( new Detector(14.55,0,10, AThreshold) );
+  addDetector( new Detector(6,0,4.04, AThreshold) );
+
+  // I want to add detectors at a constant radius
+  // such that we can have one detector at
+  // r=6m, z=4.04m corresponding to 56deg.
+  // This is roughly R = 7.233m.  So Fix that
+  // and scan angles from 0-90 deg
+  /*double R    = 7.233; //m
+  int nAngles = 90;    // 90 angles in total
+  double step = 1;     // 1 degrees
+  for(int i=0; i<nAngles; ++i){
+    double ang = i * step / Phys::DEG_RAD;
+    addDetector( new Detector( R*sin(ang), 0, R*cos(ang), AThreshold) );
+  }// end creation of detectors
+  */
   
 }
 

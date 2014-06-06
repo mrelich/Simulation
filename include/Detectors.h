@@ -14,6 +14,7 @@
 
 // My goodies
 #include "Detector.h"
+#include "Physics.h"
 
 // Standard
 #include <vector>

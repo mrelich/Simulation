@@ -6,6 +6,8 @@
 
 #include "myHist.C"
 
+TString savedir = "../plots/sep350ps/";
+
 //------------------------//
 // Main
 //------------------------//
@@ -13,7 +15,8 @@ void RandomShower()
 {
 
   // input file
-  TFile* file = new TFile("output_testbeam.root");
+  //TFile* file = new TFile("output_testbeam.root");
+  TFile* file = new TFile("output_testbeam350ps.root");
 
   vector<TString> pnames;
   pnames.push_back("Qz_event0_pulse0");
@@ -47,7 +50,7 @@ void RandomShower()
     leg->AddEntry(prof,name.Data(),"l");
     prof->Draw();
     leg->Draw("same");
-    c->SaveAs(("../plots/"+pname+".png").Data());
+    c->SaveAs((savedir+pname+".png").Data());
   }
 
   

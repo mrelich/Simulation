@@ -39,8 +39,8 @@ int main()
   int nzsteps       = 100;  // Number of steps for shower
   double zmin       = 0;    // Minimum z point [m]
   double zmax       = 1;    // maximum z point [m]
-  int ntsteps       = 10000;  // Number of time steps
-  double tstepsize  = 0.01;  // Time step size [ns]
+  int ntsteps       = 100000;  // Number of time steps
+  double tstepsize  = 0.001;  // Time step size [ns]
   string outputname = "";   // The name to save the output
   int flag          = 0;    // Flag to turn on and off saving output
   
@@ -48,7 +48,9 @@ int main()
   // for now I will hard code some test
   // values 
   inputfile  = "showers.root";
-  outputname = "output_testbeam350ps.root"; 
+  //outputname = "output_Req6m_AraCollab.root"; 
+  //outputname = "output_multiDet.root"; 
+  outputname = "output_AraCollab_new.root"; 
   flag |= Opt_SaveProfiles;
   flag |= Opt_SaveVPotential;
   flag |= Opt_SaveEField;
