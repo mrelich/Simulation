@@ -123,11 +123,11 @@ void plotE(TFile* efile, TFile* gfile,
 	   TString ename, TString gname, 
 	   int opt)
 {
-
+  
   // Make Canvas
   TCanvas* c = makeCanvas("c");
   c->SetRightMargin(0.10);
-
+  
   // sstring to save
   stringstream save;
 
@@ -138,14 +138,14 @@ void plotE(TFile* efile, TFile* gfile,
   TGraph* Et = (TGraph*) efile->Get(ename.Data());
   int nbins = 3000;
   float xmin = 0;
-  float xmax = 30e-9;
+  float xmax = 100e-9;
   TH1F* h_Et = convertToSeconds(Et,nbins,xmin,xmax);
   setHistAtt(h_Et, "time [s]", "E(t) [V m^{-1}]", kBlack, 20);
   
   // Draw and save
   h_Et->Draw();
   save << savedir << ename << "_input_zoomlower.png";
-  c->SaveAs(save.str().c_str());
+  //c->SaveAs(save.str().c_str());
   save.str("");
 
   // Now fourier transform that shit
@@ -161,7 +161,7 @@ void plotE(TFile* efile, TFile* gfile,
   c->SetLogx();
   c->SetLogy();
   h_Ef_format->Draw();
-  c->SaveAs(save.str().c_str());
+  //c->SaveAs(save.str().c_str());
   save.str("");
   c->SetLogx(false);
   c->SetLogy(false);
@@ -183,7 +183,7 @@ void plotE(TFile* efile, TFile* gfile,
   if( opt != 1 ){
     
     // Reset bins
-    float fmin = 0;
+    float fmin = 100e6;
     float fmax = 800e6;
     resetbins(re_full, im_full, nbins, fmin, fmax, 1/(xmax-xmin), h_Ef, h_gain,opt);
 
@@ -209,7 +209,7 @@ void plotE(TFile* efile, TFile* gfile,
   //h_back_format->SetMaximum(0.02);
   //h_back_format->SetMinimum(-0.02);
   h_back_format->Draw();
-  c->SaveAs(save.str().c_str());
+  //c->SaveAs(save.str().c_str());
 
 }
 
@@ -282,7 +282,7 @@ void plotSumE(TFile* efile, TFile* gfile,
     
     // Reset bins
     float fmin = 100e6;
-    float fmax = 101e6;
+    float fmax = 800e6;
     resetbins(re_full, im_full, nbins, fmin, fmax, 1/(xmax-xmin), h_Ef, h_gain,opt);
 
   }
@@ -304,10 +304,15 @@ void plotSumE(TFile* efile, TFile* gfile,
   if( opt == 1 )    save << "_backToOriginal.png";
   else if(opt == 2) save << "_flatGain_fmax"<<fmax<<".png";
   else if(opt == 3) save << "_" << gname << ".png";
-  //h_back_format->SetMaximum(0.02);
-  //h_back_format->SetMinimum(-0.02);
+  h_back_format->SetMaximum(0.0015);
+  h_back_format->SetMinimum(-0.0015);
   h_back_format->Draw();
   c->SaveAs(save.str().c_str());
+
+  TFile* fout = new TFile(("outroot/"+ename+".root").Data(),"recreate");
+  h_back_format->Write();
+  fout->Write();
+  fout->Close();
 
 }
 
