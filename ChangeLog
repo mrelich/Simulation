@@ -1,3 +1,7 @@
+2014-07-24 Matt:
+	* Testing directory added.
+	* Simple test for TrackTool completed.  More detailed check with ZHS to be done
+
 2014-07-23 Matt:
 	* Adding TreeMaker tool which will make trees from G4 output.
 	* Adding TrackTool. It compiles, but is untested!!!!
